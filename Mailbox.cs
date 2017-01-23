@@ -4,12 +4,15 @@ using UnityEngine;
 
 public class Mailbox : MonoBehaviour {
 
-    public bool isEmpty = true;
+	private bool isEmpty;
     private Animator anim;
+	private SFXManager sfx;
 
 	// Use this for initialization
 	void Start () {
-        //anim = GetComponent<Animator>();
+		this.isEmpty = true;
+        anim = GetComponent<Animator>();
+		sfx = FindObjectOfType<SFXManager>();
 	}
 	
 	// Update is called once per frame
@@ -21,11 +24,20 @@ public class Mailbox : MonoBehaviour {
         GameObject obj = col.gameObject;
 
         if (obj.GetComponent<PlayerController>()) {
-            //anim.SetBool("isOpen", true);
+            anim.SetBool("mailboxOpen", true);
+			sfx.make_sfx ("mailbox");
         }
     }
 
     void OnTriggerExit2D(Collider2D col) {
         //anim.SetBool("isOpen", false);
     }
+
+	public bool GetIsEmpty() {
+		return this.isEmpty;
+	}
+
+	public void fill() {
+		this.isEmpty = false;
+	}
 }

@@ -3,25 +3,51 @@ using System.Collections;
 
 public class MusicManager : MonoBehaviour
 {
-
     public AudioClip StartMenuMusic;
 
-    private AudioSource audioSource;
+    static AudioSource audioSource = null;
 
     void Awake()
     {
-        DontDestroyOnLoad(gameObject);
+		//if (instance != null) {
+		//	instance.StopMusic ();
+		//	DestroyObject(gameObject);
+		//}
+		//else{
+		//	instance = this;
+			DontDestroyOnLoad(gameObject);
+		//}
     }
 
     void Start()
     {
-        audioSource = gameObject.AddComponent<AudioSource>();
-        audioSource.clip = StartMenuMusic;
-        audioSource.loop = true;
-        audioSource.Play();
+		Debug.Log (audioSource);
+		if (audioSource == null) {
+			audioSource = gameObject.AddComponent<AudioSource> ();
+			audioSource.clip = StartMenuMusic;
+			audioSource.loop = true;
+			audioSource.Play();
+		}
+      
     }
 
-    public void ChangeVolume(float volume) {
-        audioSource.volume = volume;
-    }
+	// Update is called once per frame
+	void Update () {
+
+		//musicManager.ChangeVolume (MusicVolumeSlider.value);
+		//musicManager.ChangeVolume (SFXSlider.value);
+		audioSource.volume  = PlayerPrefsManager.GetMusicVolume();
+		//PlayerPrefsManager.SetSFXVolume (SFXSlider.value);
+	}
+
+	// Update is called once per frame
+	public void StopMusic () {
+		//musicManager.ChangeVolume (MusicVolumeSlider.value);
+		//musicManager.ChangeVolume (SFXSlider.value);
+		audioSource.Stop();		//PlayerPrefsManager.SetSFXVolume (SFXSlider.value);
+	}
+
+
+
+ 
 }

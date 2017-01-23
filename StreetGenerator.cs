@@ -6,6 +6,7 @@ public class StreetGenerator : MonoBehaviour {
 
     public GameObject[] houseUnits;
     public int houseCount;
+    public float houseWidth;
     public bool weightedSpawning;
     public float weight1;
     public float weight2;
@@ -13,7 +14,7 @@ public class StreetGenerator : MonoBehaviour {
     public int weight1Bound;
     public int weight2Bound;
     public int weight3Bound;
-
+    public float streetSize;
 
     private int houseTypes;
 
@@ -25,18 +26,20 @@ public class StreetGenerator : MonoBehaviour {
         } else {
             spawnHouses(houseCount);
         }
+		Debug.Log ("width: " + this.houseWidth);
+		Debug.Log ("count: " + this.houseCount);
+        this.streetSize = this.houseWidth * this.houseCount;
     }
 	
 	// Update is called once per frame
 	void Update () {
-		
 	}
 
     void spawnHouses(int houses) {
         if(houses == 0) {
             return;
         }
-        GameObject unit = Instantiate(houseUnits[Random.Range(0, houseTypes)], new Vector3(21 * (houses - 1), 0, 0), Quaternion.identity) as GameObject;
+        GameObject unit = Instantiate(houseUnits[Random.Range(0, houseTypes)], new Vector3(houseWidth * (houses - 1), 0, 0), Quaternion.identity) as GameObject;
         unit.transform.parent = transform;
         spawnHouses(houses - 1);
     }
@@ -47,21 +50,25 @@ public class StreetGenerator : MonoBehaviour {
         }
         float random = Random.Range(0f, 1f);
         if (random <= weight1) {
-            GameObject unit = Instantiate(houseUnits[Random.Range(0, weight1Bound)], new Vector3(21 * (houses - 1), 0, 0), Quaternion.identity) as GameObject;
+            GameObject unit = Instantiate(houseUnits[Random.Range(0, weight1Bound)], new Vector3(houseWidth * (houses - 1), 0, 0), Quaternion.identity) as GameObject;
             unit.transform.parent = transform;
             spawnHouses(houses - 1);
         } else if (random <= weight2) {
-            GameObject unit = Instantiate(houseUnits[Random.Range(weight1Bound, weight2Bound)], new Vector3(21 * (houses - 1), 0, 0), Quaternion.identity) as GameObject;
+            GameObject unit = Instantiate(houseUnits[Random.Range(weight1Bound, weight2Bound)], new Vector3(houseWidth * (houses - 1), 0, 0), Quaternion.identity) as GameObject;
             unit.transform.parent = transform;
             spawnHouses(houses - 1);
         } else if (random <= weight3) {
-            GameObject unit = Instantiate(houseUnits[Random.Range(weight2Bound, weight3Bound)], new Vector3(21 * (houses - 1), 0, 0), Quaternion.identity) as GameObject;
+            GameObject unit = Instantiate(houseUnits[Random.Range(weight2Bound, weight3Bound)], new Vector3(houseWidth * (houses - 1), 0, 0), Quaternion.identity) as GameObject;
             unit.transform.parent = transform;
             spawnHouses(houses - 1);
         } else {
-            GameObject unit = Instantiate(houseUnits[Random.Range(weight3Bound, houseTypes)], new Vector3(21 * (houses - 1), 0, 0), Quaternion.identity) as GameObject;
+            GameObject unit = Instantiate(houseUnits[Random.Range(weight3Bound, houseTypes)], new Vector3(houseWidth * (houses - 1), 0, 0), Quaternion.identity) as GameObject;
             unit.transform.parent = transform;
             spawnHouses(houses - 1);
         }
+    }
+
+    public float getStreetSize() {
+        return this.streetSize;
     }
 }

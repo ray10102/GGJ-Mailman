@@ -34,6 +34,9 @@ public class Background_SFXManager : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
+
+		Debug.Log (min_frames_between_sound);
+
         //Okay let's make some sounds... randomly
 
         //If the frames from last sfx is greater than the minimum required frames between sound effects
@@ -41,9 +44,13 @@ public class Background_SFXManager : MonoBehaviour {
         if (frames_since_last_sfx > min_frames_between_sound)
         {
             rand_num = Random.Range(0, one_out_of_a);
+
             if (rand_num == 1)
             {
-                audioSource[Random.Range(0, audioSource.Length-1)].Play();//Play the sound
+				int rand_num = Random.Range(0, audioSource.Length-1);
+				//Update the volume
+				audioSource[rand_num].volume = PlayerPrefsManager.GetSFXVolume();
+				audioSource[rand_num].Play();//Play the sound
                 frames_since_last_sfx = 0; //reset the frame count
             }
                    

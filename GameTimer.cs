@@ -5,42 +5,43 @@ using UnityEngine.UI;
 public class GameTimer : MonoBehaviour {
 
 	public float levelSeconds;
-	public bool isEndOfLevel;
-	
-	private Slider slider;
-	private AudioSource audioSource;
-	private LevelManager levelManager;
-	private GameObject winText;
-	private bool spawnersDeactivated;
+	[SerializeField]
+	private string nextScene;
+	private Text displayText;
+	private bool levelFinished;
+	private SceneLoader loader;
+	private bool started;
+	private float secondsRemaining;
 
 	// Use this for initialization
 	void Start () {
-		spawnersDeactivated = false;
-		slider = GetComponent<Slider> ();
-		audioSource = GetComponent<AudioSource> ();
-		isEndOfLevel = false;
-		levelManager = GameObject.FindObjectOfType<LevelManager> ();
-		winText = GameObject.Find ("WinText");
-		if (!winText) {
-			Debug.LogWarning ("No win text found");
-		}
-		winText.SetActive (false);
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		slider.value = 1 -  Time.timeSinceLevelLoad / levelSeconds;
-		if (Time.timeSinceLevelLoad >= levelSeconds && !isEndOfLevel) {
-			if (true) { // TODO : test condition
-                isEndOfLevel = true;                
-				audioSource.Play ();
-				winText.SetActive (true);
-				Invoke ("LoadNextLevel", audioSource.clip.length);
-			}
-		}
+		started = false;
+		this.loader = FindObjectOfType<SceneLoader> ();
+		this.levelFinished = false;
+		this.displayText = GameObject.Find("Canvas/Timer").GetComponent<Text>();
+		this.secondsRemaining = this.levelSeconds;
 	}
 
-	void LoadNextLevel () {
-		levelManager.LoadNextLevel ();
+	public void StartTimer() {
+		started = true;
+	}
+	// Update is called once per frame
+	void Update () {
+		if (started) {
+			secondsRemaining -= Time.deltaTime;
+			if (!this.levelFinished) {
+				this.displayText.text = "Time: " + ((int)secondsRemaining).ToString ();
+			} else {
+				OnFinish ();
+			}
+			if (secondsRemaining <= 0) {
+				this.levelFinished = true;
+			}
+		}
+
+	}
+	private void OnFinish() {
+		this.loader.LoadImmediate ();
 	}
 }
+	
